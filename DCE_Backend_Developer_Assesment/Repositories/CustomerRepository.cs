@@ -62,7 +62,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
                 connection.Open();
 
                 using (SqlCommand command = new SqlCommand(
-                    "INSERT INTO Customer (Username, Email, FirstName, LastName ) " +
+                    "INSERT INTO Customer (Username, Email, FirstName, LastName) " +
+                    "OUTPUT INSERTED.UserId, INSERTED.IsActive, INSERTED.CreatedOn " +
                     "VALUES (@Username, @Email, @FirstName, @LastName);",
                     connection))
                 {
@@ -70,19 +71,29 @@ namespace DCE_Backend_Developer_Assesment.Repositories
                     command.Parameters.AddWithValue("@Email", customer.Email);
                     command.Parameters.AddWithValue("@FirstName", customer.FirstName);
                     command.Parameters.AddWithValue("@LastName", customer.LastName);
-                   
+                  
 
-                    int rowsAffected = command.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
+                    // Execute the INSERT command and capture the output values
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        return customer; // Registration was successful
+                        if (reader.Read())
+                        {
+                            // Update the customer object with the returned values
+                            customer.UserId = (Guid)reader["UserId"];
+                            customer.IsActive = (bool)reader["IsActive"];
+                            customer.CreatedOn= (DateTime)reader["CreatedOn"];
+                        }
+                        else
+                        {
+                            return null; // Insertion failed
+                        }
                     }
 
-                    return null; // Registration failed
+                    return customer; // Registration was successful
                 }
             }
         }
+
 
 
 
