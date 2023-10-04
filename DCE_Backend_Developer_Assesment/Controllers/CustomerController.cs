@@ -7,7 +7,7 @@ namespace DCE_Backend_Developer_Assesment.Controllers
 {
     [Route("api/customers")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController :ControllerBase
     {
         private readonly ICustomerService _customerService;
 
@@ -15,7 +15,7 @@ namespace DCE_Backend_Developer_Assesment.Controllers
         {
             _customerService = customerService;
         }
-
+       
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -29,30 +29,30 @@ namespace DCE_Backend_Developer_Assesment.Controllers
 
             return Ok(customers); // Return a 200 OK response with the list of customers
         }
-        [HttpPost("register")]
-        public IActionResult RegisterCustomer([FromBody] CustomerRegistrationRequest registrationRequest)
-        {
-            // Validate the incoming registration request data
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState); // Return validation errors
-            }
+       [HttpPost("register")]
+public IActionResult RegisterCustomer([FromBody] CustomerRegistrationRequest registrationRequest)
+{
+    // Validate the incoming registration request data
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState); // Return validation errors
+    }
 
-            // Pass the registration request to the service for registration
-            Customer createdCustomer = _customerService.RegisterCustomer(registrationRequest);
+    // Pass the registration request to the service for registration
+    Customer createdCustomer = _customerService.RegisterCustomer(registrationRequest);
 
-            if (createdCustomer != null)
-            {
-                // Return an HTTP Created (201) response with the created customer object
-                return CreatedAtAction(nameof(GetCustomerById), new { id = createdCustomer.UserId }, createdCustomer);
-            }
-            else
-            {
-                // Handle registration failure (e.g., duplicate email)
-                // Return an appropriate response
-                return BadRequest(new { Message = "Registration failed" });
-            }
-        }
+    if (createdCustomer != null)
+    {
+        // Return an HTTP Created (201) response with the created customer object
+        return CreatedAtAction(nameof(GetCustomerById), new { id = createdCustomer.UserId }, createdCustomer);
+    }
+    else
+    {
+        // Handle registration failure (e.g., duplicate email)
+        // Return an appropriate response
+        return BadRequest(new { Message = "Registration failed" });
+    }
+}
         [HttpDelete("{id}")]
         public IActionResult DeleteCustomer(Guid id)
         {
