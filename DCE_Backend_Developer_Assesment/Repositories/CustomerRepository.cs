@@ -17,6 +17,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
+   
+
         public IEnumerable<Customer> GetAll()
         {
             List<Customer> customers = new List<Customer>();
@@ -38,7 +40,80 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             return customers;
         }
 
-        private Customer MapCustomerFromReader(SqlDataReader reader)
+        public bool IsEmailInUse(string email)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("SELECT COUNT(*) FROM Customer WHERE Email = @Email", connection))
+                {
+                    command.Parameters.AddWithValue("@Email", email);
+                    int count = (int)command.ExecuteScalar();
+                    return count > 0; // Return true if email is already in use
+                }
+            }
+        }
+
+        public Customer AddCustomer(Customer customer)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(
+                    "INSERT INTO Customer (Username, Email, FirstName, LastName ) " +
+                    "VALUES (@Username, @Email, @FirstName, @LastName);",
+                    connection))
+                {
+                    command.Parameters.AddWithValue("@Username", customer.Username);
+                    command.Parameters.AddWithValue("@Email", customer.Email);
+                    command.Parameters.AddWithValue("@FirstName", customer.FirstName);
+                    command.Parameters.AddWithValue("@LastName", customer.LastName);
+                   
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        return customer; // Registration was successful
+                    }
+
+                    return null; // Registration failed
+                }
+            }
+        }
+
+
+
+        public Customer GetCustomerById(Guid id)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("SELECT * FROM Customer WHERE UserId = @UserId", connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", id);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return MapCustomerFromReader(reader);
+                        }
+                        else
+                        {
+                            return null; // Customer not found
+                        }
+                    }
+                }
+            }
+        }
+            
+
+
+            private Customer MapCustomerFromReader(SqlDataReader reader)
         {
             return new Customer
             {
