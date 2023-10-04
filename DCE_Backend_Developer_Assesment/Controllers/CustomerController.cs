@@ -53,6 +53,21 @@ public IActionResult RegisterCustomer([FromBody] CustomerRegistrationRequest reg
         return BadRequest(new { Message = "Registration failed" });
     }
 }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCustomer(Guid id)
+        {
+            bool deleted = _customerService.DeleteCustomer(id);
+
+            if (deleted)
+            {
+                return NoContent(); // Return a 204 No Content response on successful delete
+            }
+            else
+            {
+                return NotFound(); // Return a 404 Not Found response if the customer is not found
+            }
+        }
+
 
         [HttpGet("{id}", Name = "GetCustomerById")]
         public IActionResult GetCustomerById(Guid id)

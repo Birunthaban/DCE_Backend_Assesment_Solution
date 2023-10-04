@@ -121,10 +121,25 @@ namespace DCE_Backend_Developer_Assesment.Repositories
                 }
             }
         }
-            
+        public bool DeleteCustomer(Guid id)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("DELETE FROM Customer WHERE UserId = @UserId", connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", id);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+            }
+        }
 
 
-            private Customer MapCustomerFromReader(SqlDataReader reader)
+
+        private Customer MapCustomerFromReader(SqlDataReader reader)
         {
             return new Customer
             {

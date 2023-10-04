@@ -8,5 +8,6 @@ namespace DCE_Backend_Developer_Assesment.Repositories
         IEnumerable<Customer> GetAll();
         bool IsEmailInUse(string email);
         Customer GetCustomerById(Guid id);
+        bool DeleteCustomer(Guid id);
     }
 }

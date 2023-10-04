@@ -10,5 +10,6 @@ namespace DCE_Backend_Developer_Assesment.Services
         IEnumerable<Customer> GetAll();
         Customer RegisterCustomer(CustomerRegistrationRequest registrationRequest);
         Customer GetCustomerById(Guid id);
+        bool DeleteCustomer(Guid id);
     }
 }

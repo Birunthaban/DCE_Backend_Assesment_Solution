@@ -16,6 +16,14 @@ namespace DCE_Backend_Developer_Assesment.Services
         {
             return _customerRepository.GetAll();
         }
+ 
+
+            public bool DeleteCustomer(Guid id)
+            {
+                return _customerRepository.DeleteCustomer(id);
+            }
+        
+
 
 
         public Customer RegisterCustomer(CustomerRegistrationRequest registrationRequest)
@@ -39,6 +47,7 @@ namespace DCE_Backend_Developer_Assesment.Services
             // Call the repository to add the new customer to the database
             return _customerRepository.AddCustomer(newCustomer);
         }
+
         public Customer GetCustomerById(Guid id)
         {
             // Call the repository to get the customer by ID
