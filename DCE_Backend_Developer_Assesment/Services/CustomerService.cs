@@ -53,11 +53,5 @@ namespace DCE_Backend_Developer_Assesment.Services
             // Call the repository to get the customer by ID
             return _customerRepository.GetCustomerById(id);
         }
-
-        public bool UpdateCustomer(Guid id, string? username, string? email, string? firstName, string? lastName)
-        {
-            return _customerRepository.UpdateCustomer(id, username, email, firstName, lastName);
-        }
-
     }
 }

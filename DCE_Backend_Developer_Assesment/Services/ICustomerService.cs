@@ -11,6 +11,5 @@ namespace DCE_Backend_Developer_Assesment.Services
         Customer RegisterCustomer(CustomerRegistrationRequest registrationRequest);
         Customer GetCustomerById(Guid id);
         bool DeleteCustomer(Guid id);
-        bool UpdateCustomer(Guid id, string username, string email, string firstName, string lastName);
     }
 }
