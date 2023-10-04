@@ -9,5 +9,6 @@ namespace DCE_Backend_Developer_Assesment.Repositories
         bool IsEmailInUse(string email);
         Customer GetCustomerById(Guid id);
         bool DeleteCustomer(Guid id);
+        bool UpdateCustomer(Guid id, string? username, string? email, string? firstName, string? lastName);
     }
 }
