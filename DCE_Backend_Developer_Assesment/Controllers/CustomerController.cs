@@ -2,6 +2,7 @@
 using DCE_Backend_Developer_Assesment.Models;
 using DCE_Backend_Developer_Assesment.Repositories;
 using DCE_Backend_Developer_Assesment.Services;
+using DCE_Backend_Developer_Assessment.DTO.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DCE_Backend_Developer_Assesment.Controllers
@@ -104,6 +105,7 @@ namespace DCE_Backend_Developer_Assesment.Controllers
                 return BadRequest("Email is already in use or no fields to update."); // Return a 400 Bad Request if the email is already in use or no fields to update
             }
         }
+
         [HttpGet("{customerId}/active-orders")]
         public IActionResult GetActiveOrdersByCustomer(Guid customerId)
         {

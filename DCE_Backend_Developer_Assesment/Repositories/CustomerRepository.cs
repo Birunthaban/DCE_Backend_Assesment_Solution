@@ -23,8 +23,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             {
                 connection.Open();
 
-                // Check if the new email already exists for another customer
-                if (email != null && IsEmailInUse(email))
+                // Check if the new email already exists for another customer, excluding the current customer with the same ID
+                if (email != null && IsEmailInUse(email, id))
                 {
                     return false; // Return false to indicate that email is already in use
                 }
@@ -50,6 +50,12 @@ namespace DCE_Backend_Developer_Assesment.Repositories
                 if (lastName != null)
                 {
                     updateColumns.Add("LastName = @LastName");
+                }
+
+                if (updateColumns.Count == 0)
+                {
+                    // No fields to update
+                    return false;
                 }
 
                 updateSql += string.Join(", ", updateColumns);
@@ -121,6 +127,25 @@ namespace DCE_Backend_Developer_Assesment.Repositories
                 }
             }
         }
+        public bool IsEmailInUse(string email, Guid currentUserId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT COUNT(*) FROM Customer WHERE Email = @Email AND UserId != @UserId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@UserId", currentUserId);
+
+                    int count = (int)command.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
+
 
         public Customer AddCustomer(Customer customer)
         {
