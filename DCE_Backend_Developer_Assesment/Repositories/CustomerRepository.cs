@@ -17,16 +17,22 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
+        // Helper method to create and open a connection with connection pooling
+        private SqlConnection CreateOpenConnection()
+        {
+            SqlConnection connection = new SqlConnection(_connectionString);
+            connection.Open();
+            return connection;
+        }
+
         // Updates customer information in the database.
         // Handles email uniqueness and optionally updates fields if provided.
         public bool UpdateCustomer(Guid id, string? username, string? email, string? firstName, string? lastName)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = CreateOpenConnection())
             {
-                connection.Open();
-
                 // Check if the new email already exists for another customer, excluding the current customer with the same ID
-                if (email != null && IsEmailInUse(email, id))
+                if (email != null && IsEmailInUse(connection, email, id))
                 {
                     return false; // Return false to indicate that email is already in use
                 }
@@ -98,10 +104,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
         {
             List<Customer> customers = new List<Customer>();
 
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = CreateOpenConnection())
             {
-                connection.Open();
-
                 using (SqlCommand command = new SqlCommand("SELECT * FROM Customer", connection))
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -118,10 +122,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
         // Checks if an email is already in use by any customer.
         public bool IsEmailInUse(string email)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = CreateOpenConnection())
             {
-                connection.Open();
-
                 using (SqlCommand command = new SqlCommand("SELECT COUNT(*) FROM Customer WHERE Email = @Email", connection))
                 {
                     command.Parameters.AddWithValue("@Email", email);
@@ -132,32 +134,25 @@ namespace DCE_Backend_Developer_Assesment.Repositories
         }
 
         // Checks if an email is already in use by other customers, excluding the one with the provided UserId.
-        public bool IsEmailInUse(string email, Guid currentUserId)
+        public bool IsEmailInUse(SqlConnection connection, string email, Guid currentUserId)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            string query = "SELECT COUNT(*) FROM Customer WHERE Email = @Email AND UserId != @UserId";
+
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                connection.Open();
+                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@UserId", currentUserId);
 
-                string query = "SELECT COUNT(*) FROM Customer WHERE Email = @Email AND UserId != @UserId";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-                    command.Parameters.AddWithValue("@UserId", currentUserId);
-
-                    int count = (int)command.ExecuteScalar();
-                    return count > 0;
-                }
+                int count = (int)command.ExecuteScalar();
+                return count > 0;
             }
         }
 
         // Adds a new customer to the database.
         public Customer AddCustomer(Customer customer)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = CreateOpenConnection())
             {
-                connection.Open();
-
                 using (SqlCommand command = new SqlCommand(
                     "INSERT INTO Customer (Username, Email, FirstName, LastName) " +
                     "OUTPUT INSERTED.UserId, INSERTED.IsActive, INSERTED.CreatedOn " +
@@ -193,10 +188,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
         // Retrieves a customer by their ID.
         public Customer GetCustomerById(Guid id)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = CreateOpenConnection())
             {
-                connection.Open();
-
                 using (SqlCommand command = new SqlCommand("SELECT * FROM Customer WHERE UserId = @UserId", connection))
                 {
                     command.Parameters.AddWithValue("@UserId", id);
@@ -219,10 +212,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
         // Deletes a customer by their ID from the database.
         public bool DeleteCustomer(Guid id)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = CreateOpenConnection())
             {
-                connection.Open();
-
                 using (SqlCommand command = new SqlCommand("DELETE FROM Customer WHERE UserId = @UserId", connection))
                 {
                     command.Parameters.AddWithValue("@UserId", id);
