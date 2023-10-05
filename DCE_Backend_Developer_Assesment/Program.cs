@@ -13,6 +13,8 @@ builder.Services.AddSwaggerGen();
 // Register your services and repositories
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 // Configure application settings
 builder.Configuration.AddJsonFile("appsettings.json"); // Load settings from appsettings.json

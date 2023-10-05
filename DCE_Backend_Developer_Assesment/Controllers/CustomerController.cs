@@ -1,5 +1,6 @@
 ﻿using DCE_Backend_Developer_Assesment.DTO.Requests;
 using DCE_Backend_Developer_Assesment.Models;
+using DCE_Backend_Developer_Assesment.Repositories;
 using DCE_Backend_Developer_Assesment.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,12 @@ namespace DCE_Backend_Developer_Assesment.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
+        private readonly IOrderService _orderService;
 
-        public CustomerController(ICustomerService customerService)
+        public CustomerController(ICustomerService customerService ,IOrderService orderService)
         {
             _customerService = customerService;
+            _orderService = orderService;
         }
 
         [HttpGet]
@@ -101,6 +104,19 @@ namespace DCE_Backend_Developer_Assesment.Controllers
                 return BadRequest("Email is already in use or no fields to update."); // Return a 400 Bad Request if the email is already in use or no fields to update
             }
         }
+        [HttpGet("{customerId}/active-orders")]
+        public IActionResult GetActiveOrdersByCustomer(Guid customerId)
+        {
+            var activeOrders = _orderService.GetActiveOrdersByCustomer(customerId);
+
+            if (activeOrders == null || !activeOrders.Any())
+            {
+                return NotFound(); // Return a 404 Not Found response if no active orders are found
+            }
+
+            return Ok(activeOrders); // Return a 200 OK response with the list of active orders
+        }
+
 
 
 
