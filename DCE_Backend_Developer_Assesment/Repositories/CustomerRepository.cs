@@ -17,6 +17,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
+        // Updates customer information in the database.
+        // Handles email uniqueness and optionally updates fields if provided.
         public bool UpdateCustomer(Guid id, string? username, string? email, string? firstName, string? lastName)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -91,7 +93,7 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             }
         }
 
-
+        // Retrieves a list of all customers from the database.
         public IEnumerable<Customer> GetAll()
         {
             List<Customer> customers = new List<Customer>();
@@ -113,6 +115,7 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             return customers;
         }
 
+        // Checks if an email is already in use by any customer.
         public bool IsEmailInUse(string email)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -127,6 +130,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
                 }
             }
         }
+
+        // Checks if an email is already in use by other customers, excluding the one with the provided UserId.
         public bool IsEmailInUse(string email, Guid currentUserId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -146,7 +151,7 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             }
         }
 
-
+        // Adds a new customer to the database.
         public Customer AddCustomer(Customer customer)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -163,7 +168,6 @@ namespace DCE_Backend_Developer_Assesment.Repositories
                     command.Parameters.AddWithValue("@Email", customer.Email);
                     command.Parameters.AddWithValue("@FirstName", customer.FirstName);
                     command.Parameters.AddWithValue("@LastName", customer.LastName);
-                  
 
                     // Execute the INSERT command and capture the output values
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -173,7 +177,7 @@ namespace DCE_Backend_Developer_Assesment.Repositories
                             // Update the customer object with the returned values
                             customer.UserId = (Guid)reader["UserId"];
                             customer.IsActive = (bool)reader["IsActive"];
-                            customer.CreatedOn= (DateTime)reader["CreatedOn"];
+                            customer.CreatedOn = (DateTime)reader["CreatedOn"];
                         }
                         else
                         {
@@ -186,9 +190,7 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             }
         }
 
-
-
-
+        // Retrieves a customer by their ID.
         public Customer GetCustomerById(Guid id)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -213,6 +215,8 @@ namespace DCE_Backend_Developer_Assesment.Repositories
                 }
             }
         }
+
+        // Deletes a customer by their ID from the database.
         public bool DeleteCustomer(Guid id)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -229,8 +233,7 @@ namespace DCE_Backend_Developer_Assesment.Repositories
             }
         }
 
-
-
+        // Maps a customer object from a SqlDataReader.
         private Customer MapCustomerFromReader(SqlDataReader reader)
         {
             return new Customer
