@@ -1,0 +1,62 @@
+{
+	"info": {
+		"_postman_id": "f3749c5a-b2ab-44e5-a6f1-28b1d46debb7",
+		"name": "DCE Backend Developer Assesment",
+		"description": "This is a collection of requests to complete the assesment by DCE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "25553817",
+		"_collection_link": "https://www.postman.com/solar-crater-578224/workspace/dummy/collection/25553817-f3749c5a-b2ab-44e5-a6f1-28b1d46debb7?action=share&source=collection_link&creator=25553817"
+	},
+	"item": [
+		{
+			"name": "Get All Customers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://localhost:7063/api/customers",
+				"description": "This API endpoint allows you to retrieve a list of all customers in the system ."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Customer",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "https://localhost:7063/api/customers/{customer_id}",
+				"description": "This API endpoint allows you to delete a customer by his id"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Customer",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": "https://localhost:7063/api/customers/{customer_id}",
+				"description": "This API endpoint allows you to update a customer by his id . You have to also provide a Cutomer Update Request object in body"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "https://localhost:7063/api/customers/register",
+				"description": "This API endpoint allows you to create a customer . You have to also provide a Cutomer Registration Request object in body"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Active Orders By Customers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://localhost:7063/api/customers/{customer_id}/active-orders",
+				"description": "This API endpoint allows you to get all the orders which are currently active by a customer ."
+			},
+			"response": []
+		}
+	]
+}
