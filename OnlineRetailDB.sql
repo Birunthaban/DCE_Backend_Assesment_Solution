@@ -42,3 +42,28 @@ CREATE TABLE [Order] (
     FOREIGN KEY (OrderBy) REFERENCES Customer(UserId)
 );
 
+CREATE PROCEDURE GetActiveOrdersByCustomer
+    @CustomerId UNIQUEIDENTIFIER
+AS
+BEGIN
+    SELECT
+        [Order].OrderId,
+        [Order].OrderStatus,
+        [Order].OrderType,
+        [Order].OrderedOn,
+        [Order].ShippedOn,
+        Product.ProductId, -- Include ProductId
+        Supplier.SupplierId, -- Include SupplierId
+        Supplier.SupplierName,
+        Product.ProductName,
+        Product.UnitPrice
+    FROM
+        [Order]
+    JOIN
+        Product ON [Order].ProductId = Product.ProductId
+    JOIN
+        Supplier ON Product.SupplierId = Supplier.SupplierId
+    WHERE
+        [Order].OrderBy = @CustomerId
+        AND [Order].IsActive = 1
+END
