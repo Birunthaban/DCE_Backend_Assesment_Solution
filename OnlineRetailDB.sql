@@ -1,3 +1,9 @@
+-- Create the OnlineRetailDB database
+CREATE DATABASE OnlineRetailDB;
+
+-- Use the OnlineRetailDB database
+USE OnlineRetailDB;
+
 -- Create the Supplier Table
 CREATE TABLE Supplier (
     SupplierId UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
